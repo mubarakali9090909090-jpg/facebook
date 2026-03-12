@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Clone - Fully Functional Simulation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f0f2f5;
+        }
+        /* Header */
+        .header {
+            background-color: #4267B2;
+            color: white;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .logo i {
+            font-size: 32px;
+        }
+        .logo span {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .search-bar {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 4px 12px;
+            display: flex;
+            align-items: center;
+            color: #888;
+            width: 300px;
+        }
+        .search-bar i {
+            margin-right: 8px;
+        }
+        .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+        }
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+            font-size: 20px;
+        }
+        .nav-icon {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .nav-icon:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        /* Main container */
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            gap: 20px;
+            padding: 0 16px;
+        }
+        /* Left sidebar */
+        .left-sidebar {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .sidebar-item:hover {
+            background-color: #f0f2f5;
+        }
+        .sidebar-item i {
+            font-size: 20px;
+            color: #4267B2;
+            width: 24px;
+        }
+        /* Main content area */
+        .main-content {
+            flex: 2.5;
+        }
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: block;
+        }
+        /* Common card style */
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        /* Feed */
+        .create-post {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .post-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .post-input img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ccc;
+        }
+        .post-input input {
+            flex: 1;
+            border: none;
+            background-color: #f0f2f5;
+            border-radius: 20px;
+            padding: 10px 16px;
+            outline: none;
+        }
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #ddd;
+            padding-top: 12px;
+        }
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #555;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .post-action:hover {
+            background-color: #f0f2f5;
+        }
+        .post {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .post-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ccc;
+        }
+        .post-author {
+            font-weight: bold;
+        }
+        .post-time {
+            font-size: 12px;
+            color: #777;
+        }
+        .post-content {
+            margin-bottom: 16px;
+        }
+        .post-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #777;
+            font-size: 14px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+        .post-actions-footer {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 12px;
+        }
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #555;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .action-btn:hover {
+            background-color: #f0f2f5;
+        }
+        .liked {
+            color: #4267B2;
+            font-weight: bold;
+        }
+        .comments-section {
+            margin-top: 12px;
+            border-top: 1px solid #ddd;
+            padding-top: 12px;
+        }
+        .comment {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .comment img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ccc;
+        }
+        .comment-text {
+            background-color: #f0f2f5;
+            border-radius: 16px;
+            padding: 8px 12px;
+            flex: 1;
+        }
+        .comment-author {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .add-comment {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .add-comment img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ccc;
+        }
+        .add-comment input {
+            flex: 1;
+            border: none;
+            background-color: #f0f2f5;
+            border-radius: 20px;
+            padding: 8px 12px;
+            outline: none;
+        }
+        button {
+            background: #4267B2;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #365899;
+        }
+        /* Friends, Messages, Notifications lists */
+        .item-list {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .list-item:hover {
+            background-color: #f5f5f5;
+        }
+        .list-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .item-preview {
+            flex: 1;
+        }
+        .item-title {
+            font-weight: bold;
+        }
+        .item-subtitle {
+            font-size: 12px;
+            color: #777;
+        }
+        /* Profile */
+        .cover-photo {
+            height: 200px;
+            background: linear-gradient(45deg, #4267B2, #8b9dc3);
+            border-radius: 8px 8px 0 0;
+        }
+        .profile-info {
+            background: white;
+            padding: 16px;
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .profile-pic-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid white;
+            margin-top: -50px;
+            background: #ccc;
+        }
+        /* Settings */
+        .settings-tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .settings-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        .settings-tab.active {
+            border-bottom-color: #4267B2;
+            font-weight: bold;
+        }
+        .settings-content {
+            display: none;
+        }
+        .settings-content.active {
+            display: block;
+        }
+        .setting-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        /* Right sidebar */
+        .right-sidebar {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .contact-item:hover {
+            background-color: #f0f2f5;
+        }
+        .contact-item img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #ccc;
+        }
+        .online-indicator {
+            width: 10px;
+            height: 10px;
+            background-color: #31a24c;
+            border-radius: 50%;
+            margin-left: auto;
+        }
+        hr {
+            margin: 12px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+        @media (max-width: 900px) {
+            .left-sidebar, .right-sidebar {
+                display: none;
+            }
+            .main-content {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo" id="logoHome">
+            <i class="fab fa-facebook"></i>
+            <span>FaceClone</span>
+        </div>
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search...">
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-home nav-icon" id="navHome" title="Home"></i>
+            <i class="fas fa-users nav-icon" id="navFriends" title="Friends"></i>
+            <i class="fas fa-bell nav-icon" id="navNotifications" title="Notifications"></i>
+            <i class="fas fa-comment-dots nav-icon" id="navMessages" title="Messages"></i>
+            <i class="fas fa-user-circle nav-icon" id="navProfile" title="Profile"></i>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+            <div class="sidebar-item" id="sidebarProfile">
+                <i class="fas fa-user-circle"></i>
+                <span>John Doe</span>
+            </div>
+            <div class="sidebar-item" id="sidebarFriends">
+                <i class="fas fa-users"></i>
+                <span>Friends</span>
+            </div>
+            <div class="sidebar-item" id="sidebarMemories">
+                <i class="fas fa-clock"></i>
+                <span>Memories</span>
+            </div>
+            <div class="sidebar-item" id="sidebarSaved">
+                <i class="fas fa-bookmark"></i>
+                <span>Saved</span>
+            </div>
+            <div class="sidebar-item" id="sidebarEvents">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Events</span>
+            </div>
+            <hr>
+            <div class="sidebar-item" id="sidebarSettings">
+                <i class="fas fa-cog"></i>
+                <span>Settings & Privacy</span>
+            </div>
+        </div>
+
+        <!-- Main Content Views -->
+        <div class="main-content">
+            <!-- Feed View -->
+            <div id="feedView" class="view active">
+                <div class="create-post">
+                    <div class="post-input">
+                        <img src="https://via.placeholder.com/40" alt="profile">
+                        <input type="text" id="postContentInput" placeholder="What's on your mind, John?">
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-action" id="liveVideoBtn"><i class="fas fa-video" style="color:#f02849;"></i><span>Live Video</span></div>
+                        <div class="post-action" id="photoVideoBtn"><i class="fas fa-images" style="color:#45bd62;"></i><span>Photo/Video</span></div>
+                        <div class="post-action" id="feelingBtn"><i class="fas fa-smile" style="color:#f7b928;"></i><span>Feeling/Activity</span></div>
+                    </div>
+                    <button id="postButton" style="width:100%; margin-top:10px;">Post</button>
+                </div>
+                <div id="postsContainer"></div>
+            </div>
+
+            <!-- Profile View -->
+            <div id="profileView" class="view">
+                <div class="cover-photo"></div>
+                <div class="profile-info">
+                    <img src="https://via.placeholder.com/100" class="profile-pic-large" alt="profile">
+                    <div>
+                        <h2>John Doe</h2>
+                        <p>500 friends · 50 posts</p>
+                        <button id="editProfileBtn">Edit Profile</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>About</h3>
+                    <p>Web developer. Love coding and building things.</p>
+                </div>
+                <div class="card">
+                    <h3>Posts</h3>
+                    <div id="profilePosts"></div>
+                </div>
+            </div>
+
+            <!-- Friends View -->
+            <div id="friendsView" class="view">
+                <div class="card">
+                    <h3>Friends</h3>
+                    <div id="friendsList" class="item-list"></div>
+                </div>
+            </div>
+
+            <!-- Memories View -->
+            <div id="memoriesView" class="view">
+                <div class="card">
+                    <h3>Memories</h3>
+                    <p>On this day</p>
+                    <div id="memoriesList"></div>
+                </div>
+            </div>
+
+            <!-- Saved View -->
+            <div id="savedView" class="view">
+                <div class="card">
+                    <h3>Saved items</h3>
+                    <div id="savedList"></div>
+                </div>
+            </div>
+
+            <!-- Events View -->
+            <div id="eventsView" class="view">
+                <div class="card">
+                    <h3>Upcoming Events</h3>
+                    <div id="eventsList"></div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settingsView" class="view">
+                <div class="card">
+                    <h2>Settings & Privacy</h2>
+                    <div class="settings-tabs">
+                        <div class="settings-tab active" data-tab="account">Account</div>
+                        <div class="settings-tab" data-tab="privacy">Privacy</div>
+                        <div class="settings-tab" data-tab="notifications">Notifications</div>
+                    </div>
+                    <div id="accountSettings" class="settings-content active">
+                        <div class="setting-item"><span>Name</span><span>John Doe <button>Edit</button></span></div>
+                        <div class="setting-item"><span>Email</span><span>john@example.com <button>Edit</button></span></div>
+                        <div class="setting-item"><span>Password</span><span>••••••• <button>Change</button></span></div>
+                    </div>
+                    <div id="privacySettings" class="settings-content">
+                        <div class="setting-item"><span>Who can see your posts?</span><span>Friends <button>Edit</button></span></div>
+                        <div class="setting-item"><span>Who can contact you?</span><span>Everyone <button>Edit</button></span></div>
+                    </div>
+                    <div id="notificationsSettings" class="settings-content">
+                        <div class="setting-item"><span>Push notifications</span><span>On <button>Toggle</button></span></div>
+                        <div class="setting-item"><span>Email notifications</span><span>On <button>Toggle</button></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages View -->
+            <div id="messagesView" class="view">
+                <div class="card">
+                    <h3>Messages</h3>
+                    <div id="messagesList" class="item-list"></div>
+                </div>
+            </div>
+
+            <!-- Notifications View -->
+            <div id="notificationsView" class="view">
+                <div class="card">
+                    <h3>Notifications</h3>
+                    <div id="notificationsList" class="item-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <h4>Contacts</h4>
+            <div class="contact-item" data-contact="Jane Smith">
+                <img src="https://via.placeholder.com/32" alt="contact"><span>Jane Smith</span><span class="online-indicator"></span>
+            </div>
+            <div class="contact-item" data-contact="Mike Johnson">
+                <img src="https://via.placeholder.com/32" alt="contact"><span>Mike Johnson</span><span class="online-indicator"></span>
+            </div>
+            <div class="contact-item" data-contact="Sarah Williams">
+                <img src="https://via.placeholder.com/32" alt="contact"><span>Sarah Williams</span>
+            </div>
+            <div class="contact-item" data-contact="Chris Brown">
+                <img src="https://via.placeholder.com/32" alt="contact"><span>Chris Brown</span><span class="online-indicator"></span>
+            </div>
+            <hr>
+            <h4>Group Conversations</h4>
+            <div class="contact-item" data-group="Developers Club">
+                <img src="https://via.placeholder.com/32" alt="group"><span>Developers Club</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DATA ====================
+        let currentUser = "John Doe";
+        let posts = [
+            {
+                id: 1,
+                author: "John Doe",
+                content: "Just finished building this fully interactive Facebook clone! 🚀",
+                time: "Just now",
+                likes: 5,
+                likedByCurrentUser: false,
+                comments: [
+                    { author: "Jane Smith", text: "Awesome work!" },
+                    { author: "Mike Johnson", text: "Looks great!" }
+                ]
+            },
+            {
+                id: 2,
+                author: "Jane Smith",
+                content: "Beautiful sunset today 🌅",
+                time: "2 hours ago",
+                likes: 12,
+                likedByCurrentUser: false,
+                comments: [
+                    { author: "John Doe", text: "Amazing photo!" }
+                ]
+            }
+        ];
+
+        const friends = [
+            { name: "Jane Smith", status: "online", image: "https://via.placeholder.com/50" },
+            { name: "Mike Johnson", status: "online", image: "https://via.placeholder.com/50" },
+            { name: "Sarah Williams", status: "offline", image: "https://via.placeholder.com/50" },
+            { name: "Chris Brown", status: "online", image: "https://via.placeholder.com/50" }
+        ];
+
+        const messages = [
+            { sender: "Jane Smith", preview: "Hey, how's it going?", time: "5m", image: "https://via.placeholder.com/50" },
+            { sender: "Mike Johnson", preview: "Did you see the game?", time: "1h", image: "https://via.placeholder.com/50" }
+        ];
+
+        const notifications = [
+            { text: "Jane Smith liked your post.", time: "10m" },
+            { text: "Mike Johnson commented on your photo.", time: "30m" }
+        ];
+
+        const memories = [
+            { year: "2024", content: "You posted: 'First day at new job!'", image: "https://via.placeholder.com/300" },
+            { year: "2023", content: "You shared a photo from vacation.", image: "https://via.placeholder.com/300" }
+        ];
+
+        const savedItems = [
+            { title: "How to learn JavaScript", link: "#", savedBy: "You" },
+            { title: "Awesome CSS tricks", link: "#", savedBy: "You" }
+        ];
+
+        const events = [
+            { name: "Developer Meetup", date: "May 15", location: "Online" },
+            { name: "Birthday Party", date: "May 20", location: "Jane's House" }
+        ];
+
+        // ==================== UTILITIES ====================
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function showAlert(msg) {
+            alert(msg);
+        }
+
+        // ==================== RENDERING ====================
+        function renderFeed() {
+            const container = document.getElementById('postsContainer');
+            container.innerHTML = '';
+            posts.forEach(post => {
+                const el = document.createElement('div');
+                el.className = 'post';
+                el.dataset.id = post.id;
+                let commentsHTML = post.comments.map(c => `
+                    <div class="comment">
+                        <img src="https://via.placeholder.com/30">
+                        <div class="comment-text"><span class="comment-author">${c.author}</span> ${c.text}</div>
+                    </div>
+                `).join('');
+                const likeClass = post.likedByCurrentUser ? 'action-btn liked' : 'action-btn';
+                el.innerHTML = `
+                    <div class="post-header">
+                        <img src="https://via.placeholder.com/40">
+                        <div><div class="post-author">${post.author}</div><div class="post-time">${post.time}</div></div>
+                    </div>
+                    <div class="post-content">${post.content}</div>
+                    <div class="post-stats">
+                        <span><i class="fas fa-thumbs-up"></i> <span class="like-count-${post.id}">${post.likes}</span></span>
+                        <span>${post.comments.length} comments</span>
+                    </div>
+                    <div class="post-actions-footer">
+                        <div class="like-btn ${likeClass}" data-id="${post.id}"><i class="fas fa-thumbs-up"></i><span>Like</span></div>
+                        <div class="comment-btn action-btn" data-id="${post.id}"><i class="fas fa-comment"></i><span>Comment</span></div>
+                        <div class="share-btn action-btn" data-id="${post.id}"><i class="fas fa-share"></i><span>Share</span></div>
+                    </div>
+                    <div class="comments-section" id="comments-${post.id}">
+                        ${commentsHTML}
+                        <div class="add-comment">
+                            <img src="https://via.placeholder.com/30">
+                            <input type="text" class="comment-input" data-id="${post.id}" placeholder="Write a comment...">
+                            <button class="comment-submit" data-id="${post.id}">Post</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+            // Reattach event listeners
+            document.querySelectorAll('.like-btn').forEach(btn => btn.addEventListener('click', handleLike));
+            document.querySelectorAll('.comment-submit').forEach(btn => btn.addEventListener('click', handleCommentSubmit));
+            document.querySelectorAll('.share-btn').forEach(btn => btn.addEventListener('click', e => showAlert(`Share post ${e.currentTarget.dataset.id}`)));
+            document.querySelectorAll('.comment-btn').forEach(btn => btn.addEventListener('click', e => {
+                document.getElementById(`comments-${e.currentTarget.dataset.id}`).scrollIntoView({behavior:'smooth'});
+            }));
+        }
+
+        function handleLike(e) {
+            const id = parseInt(e.currentTarget.dataset.id);
+            const post = posts.find(p => p.id === id);
+            if (post) {
+                post.likedByCurrentUser = !post.likedByCurrentUser;
+                post.likes += post.likedByCurrentUser ? 1 : -1;
+                renderFeed();
+            }
+        }
+
+        function handleCommentSubmit(e) {
+            const id = parseInt(e.target.dataset.id);
+            const input = document.querySelector(`.comment-input[data-id="${id}"]`);
+            const text = input.value.trim();
+            if (text) {
+                const post = posts.find(p => p.id === id);
+                post.comments.push({ author: currentUser, text });
+                input.value = '';
+                renderFeed();
+            }
+        }
+
+        function renderProfilePosts() {
+            const container = document.getElementById('profilePosts');
+            container.innerHTML = '';
+            const userPosts = posts.filter(p => p.author === currentUser);
+            userPosts.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'post';
+                div.innerHTML = `<div class="post-content">${p.content}</div><div class="post-time">${p.time}</div>`;
+                container.appendChild(div);
+            });
+        }
+
+        function renderFriends() {
+            const container = document.getElementById('friendsList');
+            container.innerHTML = '';
+            friends.forEach(f => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `<img src="${f.image}"><span><strong>${f.name}</strong> ${f.status==='online'?'🟢':''}</span>`;
+                div.addEventListener('click', () => showAlert(`View ${f.name}'s profile`));
+                container.appendChild(div);
+            });
+        }
+
+        function renderMessages() {
+            const container = document.getElementById('messagesList');
+            container.innerHTML = '';
+            messages.forEach(m => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `<img src="${m.image}"><div class="item-preview"><div class="item-title">${m.sender}</div><div>${m.preview} <span class="item-subtitle">${m.time}</span></div></div>`;
+                div.addEventListener('click', () => showAlert(`Chat with ${m.sender}`));
+                container.appendChild(div);
+            });
+        }
+
+        function renderNotifications() {
+            const container = document.getElementById('notificationsList');
+            container.innerHTML = '';
+            notifications.forEach(n => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `<div><i class="fas fa-bell"></i> ${n.text} <span class="item-subtitle">${n.time}</span></div>`;
+                div.addEventListener('click', () => showAlert(`Notification: ${n.text}`));
+                container.appendChild(div);
+            });
+        }
+
+        function renderMemories() {
+            const container = document.getElementById('memoriesList');
+            container.innerHTML = '';
+            memories.forEach(m => {
+                const div = document.createElement('div');
+                div.className = 'card';
+                div.innerHTML = `<strong>${m.year}</strong><p>${m.content}</p><img src="${m.image}" style="max-width:100%">`;
+                container.appendChild(div);
+            });
+        }
+
+        function renderSaved() {
+            const container = document.getElementById('savedList');
+            container.innerHTML = '';
+            savedItems.forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `<i class="fas fa-bookmark"></i> ${s.title}`;
+                div.addEventListener('click', () => showAlert(`Open saved item`));
+                container.appendChild(div);
+            });
+        }
+
+        function renderEvents() {
+            const container = document.getElementById('eventsList');
+            container.innerHTML = '';
+            events.forEach(e => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `<i class="fas fa-calendar"></i> <strong>${e.name}</strong> - ${e.date} at ${e.location}`;
+                div.addEventListener('click', () => showAlert(`View event: ${e.name}`));
+                container.appendChild(div);
+            });
+        }
+
+        // ==================== NAVIGATION ====================
+        function setupNavigation() {
+            // Top nav
+            document.getElementById('logoHome').addEventListener('click', () => showView('feedView'));
+            document.getElementById('navHome').addEventListener('click', () => showView('feedView'));
+            document.getElementById('navFriends').addEventListener('click', () => { showView('friendsView'); renderFriends(); });
+            document.getElementById('navNotifications').addEventListener('click', () => { showView('notificationsView'); renderNotifications(); });
+            document.getElementById('navMessages').addEventListener('click', () => { showView('messagesView'); renderMessages(); });
+            document.getElementById('navProfile').addEventListener('click', () => { showView('profileView'); renderProfilePosts(); });
+
+            // Left sidebar
+            document.getElementById('sidebarProfile').addEventListener('click', () => { showView('profileView'); renderProfilePosts(); });
+            document.getElementById('sidebarFriends').addEventListener('click', () => { showView('friendsView'); renderFriends(); });
+            document.getElementById('sidebarMemories').addEventListener('click', () => { showView('memoriesView'); renderMemories(); });
+            document.getElementById('sidebarSaved').addEventListener('click', () => { showView('savedView'); renderSaved(); });
+            document.getElementById('sidebarEvents').addEventListener('click', () => { showView('eventsView'); renderEvents(); });
+            document.getElementById('sidebarSettings').addEventListener('click', () => showView('settingsView'));
+
+            // Create post
+            document.getElementById('postButton').addEventListener('click', () => {
+                const input = document.getElementById('postContentInput');
+                const content = input.value.trim();
+                if (content) {
+                    posts.unshift({
+                        id: posts.length+1,
+                        author: currentUser,
+                        content,
+                        time: 'Just now',
+                        likes: 0,
+                        likedByCurrentUser: false,
+                        comments: []
+                    });
+                    input.value = '';
+                    renderFeed();
+                    showView('feedView');
+                }
+            });
+
+            // Post action buttons
+            document.getElementById('liveVideoBtn').addEventListener('click', () => showAlert('Live Video - coming soon'));
+            document.getElementById('photoVideoBtn').addEventListener('click', () => showAlert('Photo/Video upload simulation'));
+            document.getElementById('feelingBtn').addEventListener('click', () => showAlert('Feeling/Activity - coming soon'));
+
+            // Search
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') showAlert(`Search for: ${e.target.value}`);
+            });
+
+            // Edit profile
+            document.getElementById('editProfileBtn')?.addEventListener('click', () => showAlert('Edit profile - mock'));
+
+            // Settings tabs
+            document.querySelectorAll('.settings-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.querySelectorAll('.settings-content').forEach(c => c.classList.remove('active'));
+                    document.getElementById(tab.dataset.tab + 'Settings').classList.add('active');
+                });
+            });
+
+            // Right sidebar contacts
+            document.querySelectorAll('.contact-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const name = item.dataset.contact || item.dataset.group;
+                    showAlert(`Chat with ${name} (simulated)`);
+                });
+            });
+        }
+
+        // Initial render
+        renderFeed();
+        renderFriends();
+        renderMessages();
+        renderNotifications();
+        renderMemories();
+        renderSaved();
+        renderEvents();
+        setupNavigation();
+    </script>
+</body>
+</html>
